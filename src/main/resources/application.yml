@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: DocMind
+
+server:
+  port: 8081
