@@ -1,6 +1,8 @@
 spring:
   application:
     name: DocMind
+  profiles:
+    active: dev
 
 server:
   port: 8081
