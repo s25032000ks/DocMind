@@ -1,9 +1,9 @@
-#database configurations
 spring:
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5434}/${DB_NAME:docmind}
     username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
@@ -13,25 +13,24 @@ spring:
       hibernate:
         format_sql: true
 
-  #gemini open ai configurations
   ai:
+    chat:
+      memory:
+        repository:
+          jdbc:
+            initialize-schema: always
     google:
       genai:
         api-key: ${GEMINI_API_KEY_DOCMIND}
         chat:
           options:
-            model: gemini-3.5-flash
+            model: gemini-3.1-flash-lite
             temperature: 0.2
         embedding:
-          model: ${GEMINI_EMBEDDING_MODEL:gemini-embedding-2-preview}
-
-#    openai:
-#      api-key: ${OPENAI_API_KEY:demo-key}
-#      chat:
-#        model: ${OPENAI_CHAT_MODEL:gpt-4o-mini}
-#        temperature: 0.2
-#      embedding:
-#        model: ${OPENAI_EMBEDDING_MODEL:text-embedding-3-small}
+          api-key: ${GEMINI_API_KEY_DOCMIND}
+          text:
+            model: ${GEMINI_EMBEDDING_MODEL:text-embedding-004}
+            dimensions: 1536
 
     vectorstore:
       pgvector:
@@ -45,21 +44,3 @@ spring:
     multipart:
       max-file-size: 25MB
       max-request-size: 50MB
-
-
-#app configurations
-app:
-  rag:
-    chunk-size: 700
-    #    chunk-overlap: 100
-    top-k: 5
-    similarity-threshold: 0.0
-
-  cors:
-    allowed-origins: "*"
-    allowed-methods: GET,POST,PUT,DELETE,OPTIONS
-    allowed-headers: "*"
-
-
-bootui:
-  enabled: ON
