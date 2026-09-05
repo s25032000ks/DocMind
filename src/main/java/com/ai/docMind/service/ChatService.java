@@ -1,5 +1,6 @@
 package com.ai.docMind.service;
 
+import com.ai.docMind.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
