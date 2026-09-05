@@ -1,7 +1,6 @@
 package com.ai.docMind.controller;
 
 import com.ai.docMind.service.ChatService;
-import com.ai.docMind.service.DocumentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
