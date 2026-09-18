@@ -6,7 +6,6 @@ import com.ai.docMind.entity.DocumentStatus;
 import com.ai.docMind.repository.DocumentMetaDataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.document.Document;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,8 +18,8 @@ import java.util.List;
 public class DocumentMetaDataService {
 
     private final DocumentMetaDataRepository metaDataRepository;
-    private final ParserService parserService;
-    private final IngestionService ingestionService;
+    private final DocParserService docParserService;
+    private final DocIngestionService ingestionService;
 
     public DocumentResponseDTO uploadAndProcess(MultipartFile file) {
         String fileName = (file.getOriginalFilename() != null) ? file.getOriginalFilename() : "document";
@@ -35,7 +34,7 @@ public class DocumentMetaDataService {
 
         documentMetadata = metaDataRepository.save(documentMetadata);
 
-        List<Document> parsedDoc = parserService.parse(file);
+        List<Document> parsedDoc = docParserService.parse(file);
 
         int chunkCreated = ingestionService.ingest(documentMetadata, parsedDoc);
 

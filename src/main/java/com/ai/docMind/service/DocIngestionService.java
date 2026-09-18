@@ -9,7 +9,8 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class IngestionService {
+public class DocIngestionService {
     public int ingest(DocumentMetadata documentMetadata, List<Document> parsedDoc) {
+        return 1;
     }
 }
