@@ -5,6 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.document.Document;
+import org.springframework.ai.reader.pdf.PagePdfDocumentReader;
+import org.springframework.ai.reader.pdf.config.PdfDocumentReaderConfig;
+import org.springframework.ai.reader.tika.TikaDocumentReader;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -12,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -31,7 +33,7 @@ public class DocParserService {
         try{
             Resource resource = new ByteArrayResource(file.getBytes()){
                 @Override
-                public @Nullable String getFileName(){
+                public @Nullable String getFilename() {
                     return fileName;
                 }
             };
@@ -53,10 +55,16 @@ public class DocParserService {
     }
 
     private List<Document> parsedGenericFile(Resource resource) {
-        return new ArrayList<>();
+        TikaDocumentReader documentReader = new TikaDocumentReader(resource);
+        return documentReader.read();
     }
 
     private List<Document> parsedPdf(Resource resource) {
-        return new ArrayList<>();
+        PdfDocumentReaderConfig config = PdfDocumentReaderConfig.builder()
+                .withPageBottomMargin(0)
+                .withPageTopMargin(0)
+                .build();
+        PagePdfDocumentReader documentReader = new PagePdfDocumentReader(resource, config);
+        return documentReader.read();
     }
 }
