@@ -10,6 +10,7 @@ import org.springframework.ai.document.Document;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -46,5 +47,14 @@ public class DocumentMetaDataService {
                 .status(documentMetadata.getStatus())
                 .message("Document successfully processed and indexed")
                 .build();
+    }
+
+    public List<DocumentResponseDTO> uploadMutipleDocuments(List<MultipartFile> files) {
+        List<DocumentResponseDTO> documentResponseDTOList = new ArrayList<>();
+        for(MultipartFile file : files){
+            DocumentResponseDTO documentResponseDTO = this.uploadAndProcess(file);
+            documentResponseDTOList.add(documentResponseDTO);
+        }
+        return documentResponseDTOList;
     }
 }

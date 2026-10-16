@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/documents")
@@ -35,6 +36,20 @@ public class DocumentController {
                         .success(true)
                         .data(documentResponseDTO)
                         .message("Document Uploaded")
+                        .timestamp(LocalDateTime.now())
+                        .build());
+    }
+
+    @PostMapping(value = "/upload-multiple", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Upload and index multiple doc(PDF, DOCX, TXT, MD, CSV) simultaneously",
+            description = "This api is used to upload index multiple document files")
+    public ResponseEntity<ApiResponse<List<DocumentResponseDTO>>> uploadMultipleDocuments(@RequestParam("files") List<MultipartFile> files){
+        List<DocumentResponseDTO> documentResponseList = documentService.uploadMutipleDocuments(files);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.<List<DocumentResponseDTO>>builder()
+                        .success(true)
+                        .data(documentResponseList)
+                        .message("Documents Uploaded Successfully")
                         .timestamp(LocalDateTime.now())
                         .build());
     }
