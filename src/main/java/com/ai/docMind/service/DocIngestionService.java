@@ -61,7 +61,7 @@ public class DocIngestionService {
                 enrichMetadata.put("documentId", documentMetadata.getUuid().toString());
                 enrichMetadata.put("fileName", documentMetadata.getFileName());
                 enrichMetadata.put("contentType", documentMetadata.getContentType());
-                enrichMetadata.put("hunkIndex", i);
+                enrichMetadata.put("chunkIndex", i);
                 Object pageNumber = chunk.getMetadata().get("page_number");
                 if(pageNumber == null){
                     pageNumber = chunk.getMetadata().get("pageNumber");

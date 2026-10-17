@@ -83,7 +83,13 @@
             <groupId>org.springframework.ai</groupId>
             <artifactId>spring-ai-pdf-document-reader</artifactId>
         </dependency>
-<!--        <dependency>-->
+        <dependency>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>3.2.4</version>
+        </dependency>
+
+        <!--        <dependency>-->
 <!--            <groupId>com.julien-dubois.bootui</groupId>-->
 <!--            <artifactId>bootui-spring-boot-starter</artifactId>-->
 <!--            <version>1.14.1</version>-->

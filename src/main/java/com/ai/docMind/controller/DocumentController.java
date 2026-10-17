@@ -1,6 +1,7 @@
 package com.ai.docMind.controller;
 
 import com.ai.docMind.dto.ApiResponse;
+import com.ai.docMind.dto.DocumentMetadataDTO;
 import com.ai.docMind.dto.DocumentResponseDTO;
 import com.ai.docMind.service.DocumentMetaDataService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/documents")
@@ -44,12 +46,48 @@ public class DocumentController {
     @Operation(summary = "Upload and index multiple doc(PDF, DOCX, TXT, MD, CSV) simultaneously",
             description = "This api is used to upload index multiple document files")
     public ResponseEntity<ApiResponse<List<DocumentResponseDTO>>> uploadMultipleDocuments(@RequestParam("files") List<MultipartFile> files){
-        List<DocumentResponseDTO> documentResponseList = documentService.uploadMutipleDocuments(files);
+        List<DocumentResponseDTO> documentResponseList = documentService.uploadMultipleDocuments(files);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.<List<DocumentResponseDTO>>builder()
                         .success(true)
                         .data(documentResponseList)
                         .message("Documents Uploaded Successfully")
+                        .timestamp(LocalDateTime.now())
+                        .build());
+    }
+
+    @GetMapping()
+    public ResponseEntity<ApiResponse<List<DocumentMetadataDTO>>> getAllDocuments(){
+        List<DocumentMetadataDTO> documentResponse = documentService.getAllDocuments();
+        return ResponseEntity.ok(ApiResponse.<List<DocumentMetadataDTO>>builder()
+                        .message("Document Fetched Successfully")
+                        .data(documentResponse)
+                        .success(true)
+                        .timestamp(LocalDateTime.now())
+                .build());
+    }
+
+    @GetMapping("/{docId}")
+    @Operation(summary = "Get metadata of specific Document by ID")
+    public ResponseEntity<ApiResponse> getDocumentById(@PathVariable UUID docId){
+        DocumentMetadataDTO documentResponse = documentService.getDocumentById(docId);
+        return ResponseEntity.ok(ApiResponse.builder()
+                        .data(documentResponse)
+                        .message("Document Fetched Successfully")
+                        .success(true)
+                        .timestamp(LocalDateTime.now())
+                .build());
+    }
+
+    @DeleteMapping("/{docId}")
+    @Operation(summary = "Delete a document and purge its vector embedding from vector store")
+    public ResponseEntity<ApiResponse> deleteDocumentById(@PathVariable UUID docId){
+        documentService.deleteDocumentById(docId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .body(ApiResponse.builder()
+                        .data(null)
+                        .message("Document Deleted Successfully")
+                        .success(true)
                         .timestamp(LocalDateTime.now())
                         .build());
     }
