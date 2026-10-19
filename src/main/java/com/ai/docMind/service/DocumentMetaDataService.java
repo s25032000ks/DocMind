@@ -80,13 +80,17 @@ public class DocumentMetaDataService {
         return modelMapper.map(documentMetadata, DocumentMetadataDTO.class);
     }
 
+    @Transactional
     public void deleteDocumentById(UUID docId) {
         DocumentMetadata documentMetadata = metaDataRepository.findById(docId)
                 .orElseThrow(() -> new ResourceNotFoundException("Document not found with id: " + docId));
         try{
-            String deleteVectorSQL = "DELETE FROM vector_store WHERE metadata->>'documentId' = ?";
-            int deletedCount = jdbcTemplate.update(deleteVectorSQL, docId.toString());
-            log.info("Deleted {} vector chunksor document id: {}", deletedCount, docId);
+            int deletedVectors = jdbcTemplate.update(
+                    "DELETE FROM vector_store WHERE metadata->>'documentId' = ?",
+                    docId.toString()
+            );
+            metaDataRepository.delete(documentMetadata);
+            log.info("Deleted {} vector chunk for document id: {}", deletedVectors, docId);
         } catch (Exception e){
             log.error("could not delete vectors from vector store directly: {}", e.getMessage());
         }

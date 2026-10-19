@@ -83,8 +83,7 @@ public class DocumentController {
     @Operation(summary = "Delete a document and purge its vector embedding from vector store")
     public ResponseEntity<ApiResponse> deleteDocumentById(@PathVariable UUID docId){
         documentService.deleteDocumentById(docId);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT)
-                .body(ApiResponse.builder()
+        return ResponseEntity.ok(ApiResponse.builder()
                         .data(null)
                         .message("Document Deleted Successfully")
                         .success(true)
