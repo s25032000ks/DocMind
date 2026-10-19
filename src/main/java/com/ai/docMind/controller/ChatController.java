@@ -46,7 +46,7 @@ public class ChatController {
         return ragService.streamQuestionAnswer(chatRequest);
     }
 
-    @GetMapping("/search/similarity")
+    @PostMapping("/search/similarity")
     public ResponseEntity<ApiResponse> similaritySearch(@Valid @RequestBody SearchRequestDTO searchRequest){
         SearchResultDTO searchResult = ragService.searchSimilarChunks(searchRequest);
         return ResponseEntity.ok(ApiResponse.builder()
