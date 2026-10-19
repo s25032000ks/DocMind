@@ -46,12 +46,11 @@ public class DocParserService {
 
         } catch (IOException e){
             logger.error("Failed to read file bytes: {}",fileName, e);
-            throw new DocumentProcessingException("Could not read uploaded file: " + fileName + e.getMessage());
+            throw new DocumentProcessingException("Could not read uploaded file: " + fileName + " " +e.getMessage());
         } catch (Exception e){
             logger.error("Error during document parsing: {}",fileName, e);
-            throw new DocumentProcessingException("Failed to parse document content: " + fileName + e.getMessage());
+            throw new DocumentProcessingException("Failed to parse document content: " + fileName +" " + e.getMessage());
         }
-
     }
 
     private List<Document> parsedGenericFile(Resource resource) {

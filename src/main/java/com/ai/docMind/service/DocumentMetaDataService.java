@@ -68,7 +68,7 @@ public class DocumentMetaDataService {
     }
 
     public List<DocumentMetadataDTO> getAllDocuments() {
-        List<DocumentMetadata> allDocumentMetadata = metaDataRepository.findAllOrderByCreatedAtDesc();
+        List<DocumentMetadata> allDocumentMetadata = metaDataRepository.findAllByOrderByCreatedAtDesc();
         return allDocumentMetadata.stream()
                 .map(documentMetadata -> modelMapper.map(documentMetadata, DocumentMetadataDTO.class))
                 .toList();

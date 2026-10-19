@@ -6,6 +6,7 @@ import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import org.modelmapper.ModelMapper;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -29,7 +30,18 @@ public class AppConfig {
                                     {doc_context}
                         
                                     Produce markdown output.
+                                    
+                                    Response guidelines:
+                                    - Provide a complete answer with a clear beginning and conclusion.
+                                    - Prioritize the most important information.
+                                    - Be concise, but do not stop in the middle of a sentence or list item.
+                                    - For broad questions, summarize the key points instead of providing
+                                      excessive detail.
+                                    - If the answer is long, prioritize completeness over exhaustive detail.
                         """)
+//                .defaultOptions(ChatOptions.builder()
+//                        .maxTokens(500)
+//                        .temperature(0.2))
                 .build();
     }
 

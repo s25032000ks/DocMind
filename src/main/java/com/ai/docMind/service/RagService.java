@@ -21,11 +21,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RagService {
 
-    private Logger logger = LoggerFactory.getLogger(RagService.class);
+    private static final Logger logger = LoggerFactory.getLogger(RagService.class);
 
     private final VectorStore vectorStore;
     private final AppProperties appProperties;
-    private ChatClient chatClient;
+    private final ChatClient chatClient;
 
     public SearchResultDTO searchSimilarChunks(SearchRequestDTO searchRequestDTO){
         List<Document> matchedDocs = retrieveRelevantDocument(searchRequestDTO.query(),

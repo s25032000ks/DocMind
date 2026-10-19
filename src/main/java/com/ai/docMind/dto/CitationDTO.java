@@ -8,9 +8,9 @@ import java.util.UUID;
 @Builder
 public record CitationDTO(UUID documentId,
                           String fileName,
-                          int chunkIndex,
-                          int pageNumber,
+                          Integer chunkIndex,
+                          Integer pageNumber,
                           String snippet,
-                          double similarityScore,
+                          Double similarityScore,
                           Map<String, Object> metadata
 ) { }
