@@ -57,6 +57,8 @@ public class DocumentController {
     }
 
     @GetMapping()
+    @Operation(summary = "Get all documents metadata",
+            description = "This api is used to get all documents metadata")
     public ResponseEntity<ApiResponse<List<DocumentMetadataDTO>>> getAllDocuments(){
         List<DocumentMetadataDTO> documentResponse = documentService.getAllDocuments();
         return ResponseEntity.ok(ApiResponse.<List<DocumentMetadataDTO>>builder()
@@ -68,7 +70,8 @@ public class DocumentController {
     }
 
     @GetMapping("/{docId}")
-    @Operation(summary = "Get metadata of specific Document by ID")
+    @Operation(summary = "Get metadata of specific Document by ID ",
+            description = "This api is used to get metadata of specific Document by ID")
     public ResponseEntity<ApiResponse> getDocumentById(@PathVariable UUID docId){
         DocumentMetadataDTO documentResponse = documentService.getDocumentById(docId);
         return ResponseEntity.ok(ApiResponse.builder()
@@ -80,7 +83,8 @@ public class DocumentController {
     }
 
     @DeleteMapping("/{docId}")
-    @Operation(summary = "Delete a document and purge its vector embedding from vector store")
+    @Operation(summary = "Delete a document and purge its vector embedding from vector store",
+            description = "This api is used to delete a document and purge its vector embedding from vector store")
     public ResponseEntity<ApiResponse> deleteDocumentById(@PathVariable UUID docId){
         documentService.deleteDocumentById(docId);
         return ResponseEntity.ok(ApiResponse.builder()

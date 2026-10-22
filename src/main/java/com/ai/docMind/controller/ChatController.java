@@ -25,12 +25,14 @@ public class ChatController {
     private final RagService ragService;
 
     @PostMapping()
-    @Operation(summary = "This is used to greet")
+    @Operation(summary = "This is used to greet", description = "This api is used to greet")
     public ResponseEntity<String> greet(@RequestBody String message){
         return ResponseEntity.ok(chatService.greet(message));
     }
 
     @PostMapping("/query")
+    @Operation(summary = "This is used to ask question from document",
+            description = "This api is used to ask question from document")
     public ResponseEntity<ApiResponse> askQuestion(@Valid @RequestBody ChatRequestDTO chatRequest){
         ChatResponseDTO chatResponse = ragService.askQuestions(chatRequest);
         return ResponseEntity.ok(ApiResponse.builder()
@@ -42,11 +44,15 @@ public class ChatController {
     }
 
     @PostMapping("/stream")
+    @Operation(summary = "This is used to stream question answer from document",
+            description = "This api is used to stream question answer from document")
     public Flux<String> streamQuestion(@Valid @RequestBody ChatRequestDTO chatRequest){
         return ragService.streamQuestionAnswer(chatRequest);
     }
 
     @PostMapping("/search/similarity")
+    @Operation(summary = "This is used to search similar chunks from document",
+            description = "This api is used to search similar chunks from document")
     public ResponseEntity<ApiResponse> similaritySearch(@Valid @RequestBody SearchRequestDTO searchRequest){
         SearchResultDTO searchResult = ragService.searchSimilarChunks(searchRequest);
         return ResponseEntity.ok(ApiResponse.builder()
