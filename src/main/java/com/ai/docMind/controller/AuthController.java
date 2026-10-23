@@ -6,6 +6,7 @@ import com.ai.docMind.dto.UserDto;
 import com.ai.docMind.dto.UserRegistrationDTO;
 import com.ai.docMind.entity.Users;
 import com.ai.docMind.repository.UserRepository;
+import com.ai.docMind.service.CustomUserDetails;
 import com.ai.docMind.service.JwtService;
 import com.ai.docMind.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 @Tag(name = "Authentication Controller",
         description = "Endpoint for authentication")
 public class AuthController {
@@ -49,8 +50,9 @@ public class AuthController {
         Authentication authentication = new UsernamePasswordAuthenticationToken(loginRequest.userName(), loginRequest.password());
         Authentication authenticated = authenticationManager.authenticate(authentication);
         Users user = userRepository.findByUserName(loginRequest.userName()).orElseThrow(() -> new RuntimeException("User not found"));
+        String token = jwtService.generateToken(new CustomUserDetails(user));
 
-        LoginResponseDTO loginResponse = userService.loginUser(loginRequest);
+        LoginResponseDTO loginResponse = new LoginResponseDTO(token, new UserDto(user.getUserId(), user.getUserName(), user.getRole(), user.getEmail()));
         return ResponseEntity.ok(loginResponse);
     }
 
