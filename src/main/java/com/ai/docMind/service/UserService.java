@@ -34,6 +34,4 @@ public class UserService {
                 registeredUser.getEmail());
     }
 
-    public LoginResponseDTO loginUser(@Valid LoginRequestDTO loginRequest) {
-    }
 }
