@@ -5,6 +5,7 @@ import com.ai.docMind.dto.DocumentMetadataDTO;
 import com.ai.docMind.dto.DocumentResponseDTO;
 import com.ai.docMind.service.DocumentMetaDataService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ import java.util.UUID;
 @Tag(name = "Document Management Controller",
         description = "Endpoint for uploading, listing and managing documents and their vector embeddings."
 )
+@SecurityRequirement(name = "bearerAuth")
 public class DocumentController {
 
     private final DocumentMetaDataService documentService;

@@ -4,6 +4,7 @@ import com.ai.docMind.dto.*;
 import com.ai.docMind.service.ChatService;
 import com.ai.docMind.service.RagService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 @Tag(name = "Chat Management Controller",
         description = "Endpoint for doing chat with documents"
 )
+@SecurityRequirement(name = "bearerAuth")
 public class ChatController {
 
     private final ChatService chatService;

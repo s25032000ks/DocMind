@@ -1,6 +1,7 @@
 package com.ai.docMind.config;
 
 import com.ai.docMind.entity.Role;
+import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +32,7 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(
                         auth -> auth
+                                .dispatcherTypeMatchers(DispatcherType.ASYNC).permitAll()
                                 .requestMatchers("/api/v1/auth/**", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs", "/swagger-resources/**", "/webjars/**").permitAll()
                                 .requestMatchers("/api/v1/admin/**").hasRole(Role.ADMIN.toString())
                                 .requestMatchers("/api/v1/chat/**", "/api/v1/documents/**").hasRole(Role.USER.toString())
