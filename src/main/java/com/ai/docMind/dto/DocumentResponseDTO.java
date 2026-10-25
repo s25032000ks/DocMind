@@ -11,5 +11,6 @@ public record DocumentResponseDTO(UUID uuid,
                                   Long fileSize,
                                   DocumentStatus status,
                                   int chunkCreated,
-                                  String message
+                                  String message,
+                                  Long userId
 ) { }

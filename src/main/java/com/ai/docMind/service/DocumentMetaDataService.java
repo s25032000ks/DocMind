@@ -4,6 +4,7 @@ import com.ai.docMind.dto.DocumentMetadataDTO;
 import com.ai.docMind.dto.DocumentResponseDTO;
 import com.ai.docMind.entity.DocumentMetadata;
 import com.ai.docMind.entity.DocumentStatus;
+import com.ai.docMind.entity.Users;
 import com.ai.docMind.exception.ResourceNotFoundException;
 import com.ai.docMind.repository.DocumentMetaDataRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class DocumentMetaDataService {
     private final JdbcTemplate jdbcTemplate;
 
     @Transactional(rollbackFor=Exception.class)
-    public DocumentResponseDTO uploadAndProcess(MultipartFile file) {
+    public DocumentResponseDTO uploadAndProcess(MultipartFile file, Users user) {
         String fileName = (file.getOriginalFilename() != null) ? file.getOriginalFilename() : "document";
         String contentType = (file.getContentType() != null) ? file.getContentType() : "application/octet-stream";
 
@@ -40,6 +41,7 @@ public class DocumentMetaDataService {
                 .contentType(contentType)
                 .status(DocumentStatus.UPLOADING)
                 .fileSize(file.getSize())
+                .user(user)
                 .build();
 
         documentMetadata = metaDataRepository.save(documentMetadata);
@@ -55,13 +57,14 @@ public class DocumentMetaDataService {
                 .fileSize(documentMetadata.getFileSize())
                 .status(documentMetadata.getStatus())
                 .message("Document successfully processed and indexed")
+                .userId(user.getUserId())
                 .build();
     }
 
-    public List<DocumentResponseDTO> uploadMultipleDocuments(List<MultipartFile> files) {
+    public List<DocumentResponseDTO> uploadMultipleDocuments(List<MultipartFile> files, Users user) {
         List<DocumentResponseDTO> documentResponseDTOList = new ArrayList<>();
         for(MultipartFile file : files){
-            DocumentResponseDTO documentResponseDTO = this.uploadAndProcess(file);
+            DocumentResponseDTO documentResponseDTO = this.uploadAndProcess(file, user);
             documentResponseDTOList.add(documentResponseDTO);
         }
         return documentResponseDTOList;
@@ -69,6 +72,13 @@ public class DocumentMetaDataService {
 
     public List<DocumentMetadataDTO> getAllDocuments() {
         List<DocumentMetadata> allDocumentMetadata = metaDataRepository.findAllByOrderByCreatedAtDesc();
+        return allDocumentMetadata.stream()
+                .map(documentMetadata -> modelMapper.map(documentMetadata, DocumentMetadataDTO.class))
+                .toList();
+    }
+
+    public List<DocumentMetadataDTO> getAllDocumentsByUser(Users user) {
+        List<DocumentMetadata> allDocumentMetadata = metaDataRepository.findAByUserOrderByCreatedAtDesc(user);
         return allDocumentMetadata.stream()
                 .map(documentMetadata -> modelMapper.map(documentMetadata, DocumentMetadataDTO.class))
                 .toList();

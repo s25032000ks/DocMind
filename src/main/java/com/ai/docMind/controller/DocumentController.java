@@ -3,6 +3,7 @@ package com.ai.docMind.controller;
 import com.ai.docMind.dto.ApiResponse;
 import com.ai.docMind.dto.DocumentMetadataDTO;
 import com.ai.docMind.dto.DocumentResponseDTO;
+import com.ai.docMind.entity.Users;
 import com.ai.docMind.service.DocumentMetaDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -11,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,8 +35,10 @@ public class DocumentController {
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Upload and index doc(PDF, DOCX, TXT, MD, CSV)",
         description = "This api is used to upload index document file")
-    public ResponseEntity<ApiResponse> uploadDocument(@RequestParam("file") MultipartFile file){
-        DocumentResponseDTO documentResponseDTO = documentService.uploadAndProcess(file);
+    public ResponseEntity<ApiResponse> uploadDocument(@RequestParam("file") MultipartFile file,
+                                                      Authentication authentication){
+        Users user = (Users) authentication.getPrincipal();
+        DocumentResponseDTO documentResponseDTO = documentService.uploadAndProcess(file, user);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse
                         .builder()
@@ -47,8 +52,10 @@ public class DocumentController {
     @PostMapping(value = "/upload-multiple", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Upload and index multiple doc(PDF, DOCX, TXT, MD, CSV) simultaneously",
             description = "This api is used to upload index multiple document files")
-    public ResponseEntity<ApiResponse<List<DocumentResponseDTO>>> uploadMultipleDocuments(@RequestParam("files") List<MultipartFile> files){
-        List<DocumentResponseDTO> documentResponseList = documentService.uploadMultipleDocuments(files);
+    public ResponseEntity<ApiResponse<List<DocumentResponseDTO>>> uploadMultipleDocuments(@RequestParam("files") List<MultipartFile> files,
+                                                                                          Authentication authentication){
+        Users user = (Users) authentication.getPrincipal();
+        List<DocumentResponseDTO> documentResponseList = documentService.uploadMultipleDocuments(files, user);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.<List<DocumentResponseDTO>>builder()
                         .success(true)
@@ -58,6 +65,7 @@ public class DocumentController {
                         .build());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping()
     @Operation(summary = "Get all documents metadata",
             description = "This api is used to get all documents metadata")
@@ -68,6 +76,20 @@ public class DocumentController {
                         .data(documentResponse)
                         .success(true)
                         .timestamp(LocalDateTime.now())
+                .build());
+    }
+
+    @GetMapping("/user")
+    @Operation(summary = "Get all documents metadata",
+            description = "This api is used to get all documents metadata")
+    public ResponseEntity<ApiResponse<List<DocumentMetadataDTO>>> getAllDocumentsByUser(Authentication authentication){
+        Users user = (Users) authentication.getPrincipal();
+        List<DocumentMetadataDTO> documentResponse = documentService.getAllDocumentsByUser(user);
+        return ResponseEntity.ok(ApiResponse.<List<DocumentMetadataDTO>>builder()
+                .message("Document Fetched Successfully")
+                .data(documentResponse)
+                .success(true)
+                .timestamp(LocalDateTime.now())
                 .build());
     }
 
